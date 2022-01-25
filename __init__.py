@@ -1,4 +1,4 @@
-#      Copyright 2020. ThingsBoard
+#      Copyright 2021. ViraLink
 #  #
 #      Licensed under the Apache License, Version 2.0 (the "License");
 #      you may not use this file except in compliance with the License.
@@ -15,4 +15,4 @@
 #
 
 
-__name__ = "tb_mqtt_client"
+__name__ = "vl_mqtt_client"
