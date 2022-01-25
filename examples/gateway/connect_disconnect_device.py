@@ -1,4 +1,4 @@
-#      Copyright 2020. ThingsBoard
+#      Copyright 2020. ViraLink
 #  #
 #      Licensed under the Apache License, Version 2.0 (the "License");
 #      you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
 #
 
 import logging
-from tb_gateway_mqtt import TBGatewayMqttClient
+from vl_gateway_mqtt import VLGatewayMqttClient
 logging.basicConfig(level=logging.DEBUG)
 
 
 def main():
-    gateway = TBGatewayMqttClient("127.0.0.1", "TEST_GATEWAY_TOKEN")
+    gateway = VLGatewayMqttClient("console.viralink.io", "TEST_GATEWAY_TOKEN")
     gateway.connect()
     gateway.gw_connect_device("Example Name")
     # device disconnecting will not delete device, gateway just stops receiving messages

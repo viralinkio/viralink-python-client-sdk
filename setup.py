@@ -26,15 +26,15 @@ VERSION = "1.3"
 
 setup(
     version=VERSION,
-    name="tb-mqtt-client",
-    author="ThingsBoard",
-    author_email="info@thingsboard.io",
+    name="vl-mqtt-client",
+    author="Viralink",
+    author_email="info@viralink.io",
     license="Apache Software License (Apache Software License 2.0)",
-    description="ThingsBoard python client SDK",
-    url="https://github.com/thingsboard/thingsboard-python-client-sdk",
+    description="ViraLink python client SDK",
+    url="https://github.com/viralinkio/viralink-python-client-sdk",
     long_description=long_description,
     long_description_content_type="text/markdown",
     python_requires=">=3.6",
     packages=["."],
     install_requires=['paho-mqtt', 'jsonschema', 'requests', 'mmh3'],
-    download_url='https://github.com/thingsboard/thingsboard-python-client-sdk/archive/%s.tar.gz' % VERSION)
+    download_url='https://github.com/viralinkio/viralink-python-client-sdk/archive/%s.tar.gz' % VERSION)

@@ -1,4 +1,4 @@
-#      Copyright 2020. ThingsBoard
+#      Copyright 2020. ViraLink
 #  #
 #      Licensed under the Apache License, Version 2.0 (the "License");
 #      you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 import logging.handlers
 import time
 
-from tb_gateway_mqtt import TBGatewayMqttClient
+from vl_gateway_mqtt import VLGatewayMqttClient
 import psutil
 logging.basicConfig(level=logging.DEBUG)
 
@@ -38,7 +38,7 @@ def rpc_request_response(gateway, request_body):
 
 
 def main():
-    gateway = TBGatewayMqttClient("127.0.0.1", "TEST_GATEWAY_TOKEN")
+    gateway = VLGatewayMqttClient("console.viralink.io", "TEST_GATEWAY_TOKEN")
     gateway.connect()
     # now rpc_request_response will process rpc requests from servers
     gateway.gw_set_server_side_rpc_request_handler(rpc_request_response)

@@ -1,4 +1,4 @@
-#      Copyright 2020. ThingsBoard
+#      Copyright 2020. ViraLink
 #  #
 #      Licensed under the Apache License, Version 2.0 (the "License");
 #      you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 import logging
 import time
 from json import dumps
-from tb_device_mqtt import TBDeviceMqttClient, DEVICE_TS_KV_VALIDATOR, KV_VALIDATOR
+from vl_device_mqtt import VLDeviceMqttClient, DEVICE_TS_KV_VALIDATOR, KV_VALIDATOR
 
 GATEWAY_ATTRIBUTES_TOPIC = "v1/gateway/attributes"
 GATEWAY_ATTRIBUTES_REQUEST_TOPIC = "v1/gateway/attributes/request"
@@ -30,11 +30,11 @@ GATEWAY_CLAIMING_TOPIC = "v1/gateway/claim"
 log = logging.getLogger(__name__)
 
 
-class TBGatewayAPI:
+class VLGatewayAPI:
     pass
 
 
-class TBGatewayMqttClient(TBDeviceMqttClient):
+class VLGatewayMqttClient(VLDeviceMqttClient):
     def __init__(self, host, token=None, port=1883, gateway=None, quality_of_service=1):
         super().__init__(host, token, port, quality_of_service)
         self.quality_of_service = quality_of_service
@@ -89,7 +89,7 @@ class TBGatewayMqttClient(TBDeviceMqttClient):
                 if self._attr_request_dict[req_id]:
                     self._attr_request_dict.pop(req_id)(self, content, None)
                 else:
-                    log.error("Unable to find callback to process attributes response from TB")
+                    log.error("Unable to find callback to process attributes response from VL")
         elif message.topic == GATEWAY_ATTRIBUTES_TOPIC:
             with self._lock:
                 # callbacks for everything
@@ -129,7 +129,7 @@ class TBGatewayMqttClient(TBDeviceMqttClient):
 
     def connect(self, callback=None, min_reconnect_delay=1, timeout=120, tls=False, ca_certs=None, cert_file=None,
                 key_file=None, keepalive=120):
-        super(TBGatewayMqttClient, self).connect(callback, min_reconnect_delay, timeout, tls, ca_certs, cert_file,
+        super(VLGatewayMqttClient, self).connect(callback, min_reconnect_delay, timeout, tls, ca_certs, cert_file,
                                                  key_file, keepalive)
         while self.get_subscriptions_in_progress() and not self.stopped and self.is_connected():
             time.sleep(.1)

@@ -1,4 +1,4 @@
-#      Copyright 2020. ThingsBoard
+#      Copyright 2020. ViraLink
 #  #
 #      Licensed under the Apache License, Version 2.0 (the "License");
 #      you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 #
 
 import logging
-from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
+from vl_device_mqtt import VLDeviceMqttClient, VLPublishInfo
 import time
 logging.basicConfig(level=logging.DEBUG)
 
@@ -27,7 +27,7 @@ attributes = {"sensorModel": "DHT-22", "attribute_2": "value"}
 
 
 def main():
-    client = TBDeviceMqttClient("127.0.0.1", "A2_TEST_TOKEN")
+    client = VLDeviceMqttClient("console.viralink.io", "A2_TEST_TOKEN")
     client.connect()
     # Sending data in async way
     client.send_attributes(attributes)
@@ -39,10 +39,10 @@ def main():
     # Waiting for data to be delivered
     result = client.send_attributes(attributes)
     result.get()
-    print("Attribute update sent: " + str(result.rc() == TBPublishInfo.TB_ERR_SUCCESS))
+    print("Attribute update sent: " + str(result.rc() == VLPublishInfo.VL_ERR_SUCCESS))
     result = client.send_attributes(attributes)
     result.get()
-    print("Telemetry update sent: " + str(result.rc() == TBPublishInfo.TB_ERR_SUCCESS))
+    print("Telemetry update sent: " + str(result.rc() == VLPublishInfo.VL_ERR_SUCCESS))
     client.stop()
 
 

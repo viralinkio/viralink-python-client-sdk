@@ -1,4 +1,4 @@
-#      Copyright 2020. ThingsBoard
+#      Copyright 2020. ViraLink
 #  #
 #      Licensed under the Apache License, Version 2.0 (the "License");
 #      you may not use this file except in compliance with the License.
@@ -15,22 +15,22 @@
 
 
 import logging
-from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
+from vl_device_mqtt import VLDeviceMqttClient, VLPublishInfo
 logging.basicConfig(level=logging.DEBUG)
 
 
 def main():
     """
     We can provide the following parameters to provisioning function:
-      host - required - Host of ThingsBoard
+      host - required - Host of ViraLink
       provision_device_key - required - device provision key from device profile
       provision_device_secret - required - device provision secret from device profile
-      port=1883 - not required - MQTT port of ThingsBoard instance
-      device_name=None - may be generated on ThingsBoard - You may pass here name for device, if this parameter is not assigned, the name will be generated
+      port=1883 - not required - MQTT port of ViraLink instance
+      device_name=None - may be generated on ViraLink - You may pass here name for device, if this parameter is not assigned, the name will be generated
 
       ### Credentials type = ACCESS_TOKEN
 
-      access_token=None - may be generated on ThingsBoard - You may pass here some access token and it will be saved as accessToken for device on ThingsBoard.
+      access_token=None - may be generated on ViraLink - You may pass here some access token and it will be saved as accessToken for device on ViraLink.
 
       ### Credentials type = MQTT_BASIC
 
@@ -43,12 +43,12 @@ def main():
 
     """
 
-    # Call device provisioning, to do this we don't need an instance of the TBDeviceMqttClient to provision device
+    # Call device provisioning, to do this we don't need an instance of the VLDeviceMqttClient to provision device
 
-    credentials = TBDeviceMqttClient.provision("127.0.0.1", "PROVISION_DEVICE_KEY", "PROVISION_DEVICE_SECRET")
+    credentials = VLDeviceMqttClient.provision("console.viralink.io", "PROVISION_DEVICE_KEY", "PROVISION_DEVICE_SECRET")
 
     if credentials is not None:
-        client = TBDeviceMqttClient("127.0.0.1", credentials)
+        client = VLDeviceMqttClient("console.viralink.io", credentials)
         client.connect()
         # Sending data in async way
 

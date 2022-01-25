@@ -1,4 +1,4 @@
-#      Copyright 2020. ThingsBoard
+#      Copyright 2020. ViraLink
 #  #
 #      Licensed under the Apache License, Version 2.0 (the "License");
 #      you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 import logging.handlers
 import time
 
-from tb_gateway_mqtt import TBGatewayMqttClient
+from vl_gateway_mqtt import VLGatewayMqttClient
 logging.basicConfig(level=logging.DEBUG)
 
 
@@ -33,7 +33,7 @@ def callback_for_specific_attr(gateway, result):
 
 
 def main():
-    gateway = TBGatewayMqttClient("127.0.0.1", "TEST_GATEWAY_TOKEN")
+    gateway = VLGatewayMqttClient("console.viralink.io", "TEST_GATEWAY_TOKEN")
     gateway.connect()
     # without device connection it is impossible to get any messages
     gateway.gw_connect_device("Test Device A2")

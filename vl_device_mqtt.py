@@ -1,4 +1,4 @@
-#      Copyright 2020. ThingsBoard
+#      Copyright 2020. ViraLink
 #  #
 #      Licensed under the Apache License, Version 2.0 (the "License");
 #      you may not use this file except in compliance with the License.
@@ -108,11 +108,11 @@ RESULT_CODES = {
 }
 
 
-class TBTimeoutException(Exception):
+class VLTimeoutException(Exception):
     pass
 
 
-class TBQoSException(Exception):
+class VLQoSException(Exception):
     pass
 
 
@@ -131,17 +131,17 @@ class ProvisionClient(paho.Client):
 
     def __on_connect(self, client, userdata, flags, rc):  # Callback for connect
         if rc == 0:
-            log.info("[Provisioning client] Connected to ThingsBoard ")
+            log.info("[Provisioning client] Connected to ViraLink ")
             client.subscribe(self.PROVISION_RESPONSE_TOPIC)  # Subscribe to provisioning response topic
             provision_request = dumps(self.__provision_request)
             log.info("[Provisioning client] Sending provisioning request %s" % provision_request)
             client.publish(self.PROVISION_REQUEST_TOPIC, provision_request)  # Publishing provisioning request topic
         else:
-            log.info("[Provisioning client] Cannot connect to ThingsBoard!, result: %s" % RESULT_CODES[rc])
+            log.info("[Provisioning client] Cannot connect to ViraLink!, result: %s" % RESULT_CODES[rc])
 
     def __on_message(self, client, userdata, msg):
         decoded_payload = msg.payload.decode("UTF-8")
-        log.info("[Provisioning client] Received data from ThingsBoard: %s" % decoded_payload)
+        log.info("[Provisioning client] Received data from ViraLink: %s" % decoded_payload)
         decoded_message = loads(decoded_payload)
         provision_device_status = decoded_message.get("status")
         if provision_device_status == "SUCCESS":
@@ -152,7 +152,7 @@ class ProvisionClient(paho.Client):
         self.disconnect()
 
     def provision(self):
-        log.info("[Provisioning client] Connecting to ThingsBoard")
+        log.info("[Provisioning client] Connecting to ViraLink")
         self.__credentials = None
         self.connect(self._host, self._port, 60)
         self.loop_forever()
@@ -161,24 +161,24 @@ class ProvisionClient(paho.Client):
         return self.__credentials
 
 
-class TBPublishInfo:
-    TB_ERR_AGAIN = -1
-    TB_ERR_SUCCESS = 0
-    TB_ERR_NOMEM = 1
-    TB_ERR_PROTOCOL = 2
-    TB_ERR_INVAL = 3
-    TB_ERR_NO_CONN = 4
-    TB_ERR_CONN_REFUSED = 5
-    TB_ERR_NOT_FOUND = 6
-    TB_ERR_CONN_LOST = 7
-    TB_ERR_TLS = 8
-    TB_ERR_PAYLOAD_SIZE = 9
-    TB_ERR_NOT_SUPPORTED = 10
-    TB_ERR_AUTH = 11
-    TB_ERR_ACL_DENIED = 12
-    TB_ERR_UNKNOWN = 13
-    TB_ERR_ERRNO = 14
-    TB_ERR_QUEUE_SIZE = 15
+class VLPublishInfo:
+    VL_ERR_AGAIN = -1
+    VL_ERR_SUCCESS = 0
+    VL_ERR_NOMEM = 1
+    VL_ERR_PROTOCOL = 2
+    VL_ERR_INVAL = 3
+    VL_ERR_NO_CONN = 4
+    VL_ERR_CONN_REFUSED = 5
+    VL_ERR_NOT_FOUND = 6
+    VL_ERR_CONN_LOST = 7
+    VL_ERR_TLS = 8
+    VL_ERR_PAYLOAD_SIZE = 9
+    VL_ERR_NOT_SUPPORTED = 10
+    VL_ERR_AUTH = 11
+    VL_ERR_ACL_DENIED = 12
+    VL_ERR_UNKNOWN = 13
+    VL_ERR_ERRNO = 14
+    VL_ERR_QUEUE_SIZE = 15
 
     def __init__(self, message_info):
         self.message_info = message_info
@@ -194,7 +194,7 @@ class TBPublishInfo:
         return self.message_info.rc
 
 
-class TBDeviceMqttClient:
+class VLDeviceMqttClient:
     def __init__(self, host, token=None, port=1883, quality_of_service=None, chunk_size=0):
         self._client = paho.Client()
         self.quality_of_service = quality_of_service if quality_of_service is not None else 1
@@ -246,7 +246,7 @@ class TBDeviceMqttClient:
         pass
 
     def _on_publish(self, client, userdata, result):
-        # log.debug("Data published to ThingsBoard!")
+        # log.debug("Data published to ViraLink!")
         pass
 
     def _on_disconnect(self, client, userdata, result_code):
@@ -313,7 +313,7 @@ class TBDeviceMqttClient:
     def disconnect(self):
         self._client.disconnect()
         log.debug(self._client)
-        log.debug("Disconnecting from ThingsBoard")
+        log.debug("Disconnecting from ViraLink")
         self.__is_connected = False
         self._client.loop_stop()
 
@@ -510,8 +510,8 @@ class TBDeviceMqttClient:
             qos = self.quality_of_service
         if qos not in (0, 1):
             log.exception("Quality of service (qos) value must be 0 or 1")
-            raise TBQoSException("Quality of service (qos) value must be 0 or 1")
-        return TBPublishInfo(self._client.publish(topic, data, qos))
+            raise VLQoSException("Quality of service (qos) value must be 0 or 1")
+        return VLPublishInfo(self._client.publish(topic, data, qos))
 
     def send_telemetry(self, telemetry, quality_of_service=None):
         quality_of_service = quality_of_service if quality_of_service is not None else self.quality_of_service
@@ -604,7 +604,7 @@ class TBDeviceMqttClient:
                             if self.__device_client_rpc_dict.get(item["rpc_request_id"]):
                                 callback = self.__device_client_rpc_dict.pop(item["rpc_request_id"])
                     if callback is not None:
-                        callback(self, None, TBTimeoutException("Timeout while waiting for a reply from ThingsBoard!"))
+                        callback(self, None, VLTimeoutException("Timeout while waiting for a reply from ViraLink!"))
             else:
                 time.sleep(0.01)
 
@@ -613,7 +613,7 @@ class TBDeviceMqttClient:
             "secretKey": secret_key,
             "durationMs": duration
         }
-        info = TBPublishInfo(self._client.publish(CLAIMING_TOPIC, dumps(claiming_request), qos=self.quality_of_service))
+        info = VLPublishInfo(self._client.publish(CLAIMING_TOPIC, dumps(claiming_request), qos=self.quality_of_service))
         return info
 
     @staticmethod

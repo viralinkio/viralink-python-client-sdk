@@ -1,4 +1,4 @@
-#      Copyright 2020. ThingsBoard
+#      Copyright 2020. ViraLink
 #  #
 #      Licensed under the Apache License, Version 2.0 (the "License");
 #      you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
 #
 
 import logging
-from tb_device_mqtt import TBDeviceMqttClient
+from vl_device_mqtt import VLDeviceMqttClient
 import socket
 
 logging.basicConfig(level=logging.DEBUG)
 # connecting to localhost
-client = TBDeviceMqttClient(socket.gethostname())
+client = VLDeviceMqttClient(socket.gethostname())
 client.connect(tls=True,
                ca_certs="mqttserver.pub.pem",
                cert_file="mqttclient.nopass.pem")

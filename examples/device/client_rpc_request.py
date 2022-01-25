@@ -1,4 +1,4 @@
-#      Copyright 2020. ThingsBoard
+#      Copyright 2020. ViraLink
 #  #
 #      Licensed under the Apache License, Version 2.0 (the "License");
 #      you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 
 import time
 import logging
-from tb_device_mqtt import TBDeviceMqttClient
+from vl_device_mqtt import VLDeviceMqttClient
 logging.basicConfig(level=logging.DEBUG)
 
 
@@ -29,7 +29,7 @@ def callback(client, request_id, resp_body, exception):
 
 
 def main():
-    client = TBDeviceMqttClient("127.0.0.1", "A2_TEST_TOKEN")
+    client = VLDeviceMqttClient("console.viralink.io", "A2_TEST_TOKEN")
 
     client.connect()
     # call "getTime" on server and receive result, then process it with callback

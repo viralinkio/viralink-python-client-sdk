@@ -1,4 +1,4 @@
-#      Copyright 2020. ThingsBoard
+#      Copyright 2020. ViraLink
 #  #
 #      Licensed under the Apache License, Version 2.0 (the "License");
 #      you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 #
 
 import logging
-from tb_device_mqtt import TBDeviceMqttClient, TBPublishInfo
+from vl_device_mqtt import VLDeviceMqttClient, VLPublishInfo
 import time
 
 logging.basicConfig(level=logging.DEBUG)
@@ -23,7 +23,7 @@ telemetry_with_ts = {"ts": int(round(time.time() * 1000)), "values": {"temperatu
 
 
 def main():
-    client = TBDeviceMqttClient("127.0.0.1", "A2_TEST_TOKEN")
+    client = VLDeviceMqttClient("console.viralink.io", "A2_TEST_TOKEN")
     # we set maximum amount of messages sent to send them at the same time. it may stress memory but increases performance
     client.max_inflight_messages_set(100)
     client.connect()
@@ -35,7 +35,7 @@ def main():
         results.append(client.send_telemetry(telemetry_with_ts))
 
     for tmp_result in results:
-        result &= tmp_result.get() == TBPublishInfo.TB_ERR_SUCCESS
+        result &= tmp_result.get() == VLPublishInfo.VL_ERR_SUCCESS
 
     print("Result " + str(result))
 

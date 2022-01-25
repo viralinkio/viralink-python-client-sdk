@@ -1,4 +1,4 @@
-"""ThingsBoard HTTP API device module."""
+"""ViraLink HTTP API device module."""
 import threading
 import logging
 import queue
@@ -21,18 +21,18 @@ FW_STATE_ATTR = "fw_state"
 REQUIRED_SHARED_KEYS = [FW_CHECKSUM_ATTR, FW_CHECKSUM_ALG_ATTR, FW_SIZE_ATTR, FW_TITLE_ATTR, FW_VERSION_ATTR]
 
 
-class TBHTTPAPIException(Exception):
-    """ThingsBoard HTTP Device API Exception class."""
+class VLHTTPAPIException(Exception):
+    """ViraLink HTTP Device API Exception class."""
 
 
-class TBProvisionFailure(TBHTTPAPIException):
+class VLProvisionFailure(VLHTTPAPIException):
     """Exception raised if device provisioning failed."""
 
 
-class TBHTTPDevice:
-    """ThingsBoard HTTP Device API class.
+class VLHTTPDevice:
+    """ViraLink HTTP Device API class.
 
-    :param host: The ThingsBoard hostname.
+    :param host: The ViraLink hostname.
     :param token: The device token.
     :param name: A name for this device. The name is only set locally.
     """
@@ -69,11 +69,11 @@ class TBHTTPDevice:
         self.chunk_size = chunk_size
 
     def __repr__(self):
-        return f'<ThingsBoard ({self.host}) HTTP device {self.name}>'
+        return f'<ViraLink ({self.host}) HTTP device {self.name}>'
 
     @property
     def host(self) -> str:
-        """Get the ThingsBoard hostname."""
+        """Get the ViraLink hostname."""
         return self.__config['host']
 
     @property
@@ -88,7 +88,7 @@ class TBHTTPDevice:
 
     @property
     def api_base_url(self) -> str:
-        """Get the ThingsBoard API base URL."""
+        """Get the ViraLink API base URL."""
         return f'{self.host}/api/v1/{self.token}'
 
     @property
@@ -99,7 +99,7 @@ class TBHTTPDevice:
     @property
     def logger(self) -> logging.Logger:
         """Get the logger instance."""
-        return logging.getLogger('TBHTTPDevice')
+        return logging.getLogger('VLHTTPDevice')
 
     @property
     def log_level(self) -> str:
@@ -270,18 +270,18 @@ class TBHTTPDevice:
         return success
 
     def connect(self) -> bool:
-        """Publish an empty telemetry data to ThingsBoard to test the connection.
+        """Publish an empty telemetry data to ViraLink to test the connection.
 
         :return: True if connected, false otherwise.
         """
         if self.test_connection():
-            self.logger.info('Connected to ThingsBoard')
+            self.logger.info('Connected to ViraLink')
             self.start_publish_worker()
             return True
         return False
 
     def _publish_data(self, data: dict, endpoint: str, timeout: int = None) -> dict:
-        """Send POST data to ThingsBoard.
+        """Send POST data to ViraLink.
 
         :param data: The data dictionary to send.
         :param endpoint: The receiving API endpoint.
@@ -295,12 +295,12 @@ class TBHTTPDevice:
         return response.json() if response.content else {}
 
     def _get_data(self, params: dict, endpoint: str, timeout: int = None) -> dict:
-        """Retrieve data with GET from ThingsBoard.
+        """Retrieve data with GET from ViraLink.
 
         :param params: A dictionary with the parameters for the request.
         :param endpoint: The receiving API endpoint.
         :param timeout: Override the instance timeout for this request.
-        :return: A dictionary with the response from the ThingsBoard instance.
+        :return: A dictionary with the response from the ViraLink instance.
         """
         response = self.__session.get(
             url=f'{self.api_base_url}/{endpoint}',
@@ -310,10 +310,10 @@ class TBHTTPDevice:
         return response.json()
 
     def send_telemetry(self, telemetry: dict, timestamp: datetime = None, queued: bool = True):
-        """Publish telemetry to ThingsBoard.
+        """Publish telemetry to ViraLink.
 
         :param telemetry: A dictionary with the telemetry data to send.
-        :param timestamp: Timestamp to set for the values. If not set the ThingsBoard server uses
+        :param timestamp: Timestamp to set for the values. If not set the ViraLink server uses
             the time of reception as timestamp.
         :param queued: Add the telemetry to the queue. If False, the data is send immediately.
         """
@@ -329,14 +329,14 @@ class TBHTTPDevice:
             self._publish_data(payload, 'telemetry')
 
     def send_attributes(self, attributes: dict):
-        """Send attributes to ThingsBoard.
+        """Send attributes to ViraLink.
 
         :param attributes: Attributes to send.
         """
         self._publish_data(attributes, 'attributes')
 
     def send_rpc(self, name: str, params: dict = None, rpc_id: int = None) -> dict:
-        """Send RPC to ThingsBoard and return response.
+        """Send RPC to ViraLink and return response.
 
         :param name: Name of the RPC method.
         :param params: Parameter for the RPC.
@@ -347,7 +347,7 @@ class TBHTTPDevice:
         return self._publish_data({'method': name, 'params': params or {}}, endpoint)
 
     def request_attributes(self, client_keys: list = None, shared_keys: list = None) -> dict:
-        """Request attributes from ThingsBoard.
+        """Request attributes from ViraLink.
 
         :param client_keys: A list of keys for client attributes.
         :param shared_keys: A list of keys for shared attributes.
@@ -424,11 +424,11 @@ class TBHTTPDevice:
     def provision(cls, host: str, device_name: str, device_key: str, device_secret: str):
         """Initiate device provisioning and return a device instance.
 
-        :param host: The root URL to the ThingsBoard instance.
+        :param host: The root URL to the ViraLink instance.
         :param device_name: Name of the device to provision.
-        :param device_key: Provisioning device key from ThingsBoard.
-        :param device_secret: Provisioning secret from ThingsBoard.
-        :return: Instance of :class:`TBHTTPClient`
+        :param device_key: Provisioning device key from ViraLink.
+        :param device_secret: Provisioning secret from ViraLink.
+        :return: Instance of :class:`VLHTTPClient`
         """
         data = {
             'deviceName': device_name,
@@ -440,12 +440,12 @@ class TBHTTPDevice:
         device = response.json()
         if device['status'] == 'SUCCESS' and device['credentialsType'] == 'ACCESS_TOKEN':
             return cls(host=host, token=device['credentialsValue'], name=device_name)
-        raise TBProvisionFailure(device)
+        raise VLProvisionFailure(device)
 
 
-class TBHTTPClient(TBHTTPDevice):
+class VLHTTPClient(VLHTTPDevice):
     """Legacy class name."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.logger.critical('TBHTTPClient class is deprecated, please use TBHTTPDevice')
+        self.logger.critical('VLHTTPClient class is deprecated, please use VLHTTPDevice')

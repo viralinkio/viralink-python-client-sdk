@@ -1,4 +1,4 @@
-#      Copyright 2020. ThingsBoard
+#      Copyright 2020. ViraLink
 #  #
 #      Licensed under the Apache License, Version 2.0 (the "License");
 #      you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 import logging
 import time
 
-from tb_device_mqtt import TBDeviceMqttClient
+from vl_device_mqtt import VLDeviceMqttClient
 logging.basicConfig(level=logging.DEBUG)
 
 
@@ -29,7 +29,7 @@ def on_attributes_change(client, result, exception):
 
 
 def main():
-    client = TBDeviceMqttClient("127.0.0.1", "A2_TEST_TOKEN")
+    client = VLDeviceMqttClient("console.viralink.io", "A2_TEST_TOKEN")
     client.connect()
     client.request_attributes(["atr1", "atr2"], callback=on_attributes_change)
     while not client.stopped:
